@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -17,16 +18,23 @@ public class Main {
             System.out.println("4. Display User Tasks");
             System.out.println("5. Exit");
             System.out.print("Choose an option: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
 
-            switch (choice) {
-                case 1 -> addUser(scanner);
-                case 2 -> addTaskToUser(scanner);
-                case 3 -> markTaskAsCompleted(scanner);
-                case 4 -> displayUserTasks(scanner);
-                case 5 -> running = false;
-                default -> System.out.println("Invalid choice. Please try again.");
+            try {
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+
+                // Handling user choice
+                switch (choice) {
+                    case 1 -> addUser(scanner);
+                    case 2 -> addTaskToUser(scanner);
+                    case 3 -> markTaskAsCompleted(scanner);
+                    case 4 -> displayUserTasks(scanner);
+                    case 5 -> running = false;
+                    default -> System.out.println("Invalid choice. Please enter a number between 1 and 5.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.nextLine(); // Clear invalid input
             }
         }
         scanner.close();
@@ -38,10 +46,11 @@ public class Main {
             System.out.println("User limit reached.");
             return;
         }
+
         System.out.print("Enter user name: ");
         String name = scanner.nextLine();
 
-        // Check if user with this name already exists
+        // Check if a user with this name already exists
         if (findUserByName(name) != null) {
             System.out.println("User already exists.");
             return;
@@ -58,14 +67,15 @@ public class Main {
         String name = scanner.nextLine();
         User user = findUserByName(name);
 
+        // Check if the user exists
         if (user == null) {
-            System.out.println("User not found.");
+            System.out.println("User not found. Please try adding the user first.");
             return;
         }
 
         System.out.print("Enter task description: ");
         String taskDescription = scanner.nextLine();
-        user.addTask(taskDescription);
+        user.addTask(taskDescription); // Add task to the user’s task list
     }
 
     // Method to mark a task as completed for a specific user
@@ -74,6 +84,7 @@ public class Main {
         String name = scanner.nextLine();
         User user = findUserByName(name);
 
+        // Check if the user exists
         if (user == null) {
             System.out.println("User not found.");
             return;
@@ -81,7 +92,7 @@ public class Main {
 
         System.out.print("Enter task description to mark as completed: ");
         String taskDescription = scanner.nextLine();
-        user.markTaskAsCompleted(taskDescription);
+        user.markTaskAsCompleted(taskDescription); // Mark the specified task as completed
     }
 
     // Method to display all tasks for a specific user
@@ -90,12 +101,13 @@ public class Main {
         String name = scanner.nextLine();
         User user = findUserByName(name);
 
+        // Check if the user exists
         if (user == null) {
             System.out.println("User not found.");
             return;
         }
 
-        user.displayTasks();
+        user.displayTasks(); // Display all tasks for the user
     }
 
     // Helper method to find a user by name
@@ -108,3 +120,4 @@ public class Main {
         return null; // Return null if user is not found
     }
 }
+
